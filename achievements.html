@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ऋStart — Learning Momentum | Growth Command Center</title>
+  <meta name="description"
+    content="ऋStart is your AI-powered learning momentum dashboard. Track XP, streaks, roadmaps, and get personalized AI mentorship." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Ambient Background Blobs -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <!-- Loading Screen -->
+  <div id="loader" class="loader">
+    <div class="loader-inner">
+      <div class="loader-logo">ऋ</div>
+      <div class="loader-text">Initializing Command Center...</div>
+      <div class="loader-bar">
+        <div class="loader-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar Overlay (mobile) -->
+  <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon">ऋ</span>
+        <span class="logo-text">Start</span>
+      </div>
+      <button id="sidebarClose" class="sidebar-close"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <ul>
+        <a href="index.html" class="nav-item" data-section="dashboard">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Dashboard</span>
+          <div class="nav-glow"></div>
+        </a>
+        <a href="learning.html" class="nav-item" data-section="learning">
+          <i class="fa-solid fa-graduation-cap"></i>
+          <span>Learning</span>
+        </a>
+        <a href="roadmaps.html" class="nav-item" data-section="roadmaps">
+          <i class="fa-solid fa-map"></i>
+          <span>Roadmaps</span>
+        </a>
+        <a href="analytics.html" class="nav-item" data-section="analytics">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>Analytics</span>
+        </a>
+        <a href="ai-mentor.html" class="nav-item" data-section="ai-mentor">
+          <i class="fa-solid fa-robot"></i>
+          <span>AI Mentor</span>
+        </a>
+        <a href="achievements.html" class="nav-item active" data-section="achievements">
+          <i class="fa-solid fa-trophy"></i>
+          <span>Achievements</span>
+        </a>
+        <a href="community.html" class="nav-item" data-section="community">
+          <i class="fa-solid fa-users"></i>
+          <span>Community</span>
+        </a>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="settings.html" class="nav-item" data-section="settings">
+        <i class="fa-solid fa-gear"></i>
+        <span>Settings</span>
+      </a>
+      <div class="sidebar-user">
+        <div class="user-avatar-sm">AS</div>
+        <div class="user-info-sm">
+          <span class="user-name-sm">Aditya S.</span>
+          <span class="user-level-sm">Level 12 · Pro</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="main-content" id="mainContent">
+
+    <!-- ===== NAVBAR ===== -->
+    <header class="navbar">
+      <div class="navbar-left">
+        <button id="sidebarToggle" class="hamburger-btn">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="search-bar">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="searchInput" placeholder="Search courses, roadmaps, topics..." />
+          <kbd>⌘K</kbd>
+        </div>
+      </div>
+      <div class="navbar-right">
+        <div class="momentum-badge">
+          <i class="fa-solid fa-bolt"></i>
+          <span id="navMomentum">847</span>
+          <span class="badge-label">MP</span>
+        </div>
+        <button class="icon-btn notif-btn" id="notifBtn">
+          <i class="fa-solid fa-bell"></i>
+          <span class="notif-dot"></span>
+        </button>
+        <button class="icon-btn theme-btn" id="themeToggle" title="Toggle theme">
+          <i class="fa-solid fa-moon" id="themeIcon"></i>
+        </button>
+        <div class="profile-avatar" id="profileAvatar">
+          <span>AS</span>
+          <div class="avatar-ring"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Notification Panel -->
+    <div id="notifPanel" class="notif-panel hidden">
+      <div class="notif-header">
+        <span>Notifications</span>
+        <button class="mark-read">Mark all read</button>
+      </div>
+      <div class="notif-list" id="notifList"></div>
+    </div>
+
+    <!-- ===== PAGE WRAPPER ===== -->
+    <div class="page-wrapper">
+
+      <!-- ===== ACHIEVEMENTS HUB ===== -->
+      <div class="achievements-layout fade-in">
+        
+        <!-- Top Section -->
+        <div class="achieve-top-section" style="margin-bottom: 1.5rem;">
+          
+          <!-- Rank Card -->
+          <div class="glass-card rank-card" style="display: flex; flex-direction: column; align-items: center; text-align: center; justify-content: center; padding: 2rem;">
+            <div style="position: relative; width: 120px; height: 120px; display: flex; justify-content: center; align-items: center; margin-bottom: 1rem;">
+              <svg class="timer-ring" width="120" height="120" style="position: absolute;">
+                <circle class="timer-ring-bg" cx="60" cy="60" r="54"></circle>
+                <circle class="timer-ring-fill" cx="60" cy="60" r="54" style="stroke: var(--accent-orange); stroke-dashoffset: 40;"></circle>
+              </svg>
+              <div style="font-size: 2rem; font-weight: 800; font-family: var(--font-heading);">12</div>
+            </div>
+            <h3 style="font-size: 1.5rem; color: var(--accent-orange); text-shadow: 0 0 10px rgba(249,115,22,0.5);">Neon Scholar</h3>
+            <p style="color: var(--text-secondary); font-size: 0.9rem;">12,400 XP / 15,000 XP to next rank</p>
+          </div>
+          
+          <!-- Daily Challenges -->
+          <div class="glass-card challenges-card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-list-check"></i> Daily Challenges</h3>
+              <span class="card-badge" style="background: rgba(16, 185, 129, 0.1); color: var(--accent-green); border-color: rgba(16, 185, 129, 0.2);">Reset in 14h 22m</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+              <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: var(--radius-md);">
+                <div style="font-size: 1.5rem; color: var(--accent-blue);"><i class="fa-solid fa-play-circle"></i></div>
+                <div style="flex: 1;">
+                  <div style="font-weight: 500;">Watch 3 Lessons</div>
+                  <div class="progress-container" style="margin-top: 0.5rem;"><div class="progress-bar" style="width: 66%; background: var(--accent-blue);"></div></div>
+                </div>
+                <div style="font-weight: 600;">2/3</div>
+                <div style="color: var(--accent-purple); font-size: 0.8rem; font-weight: 600;">+50 XP</div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: var(--radius-md);">
+                <div style="font-size: 1.5rem; color: var(--accent-green);"><i class="fa-solid fa-code"></i></div>
+                <div style="flex: 1;">
+                  <div style="font-weight: 500; color: var(--accent-green);">Complete a Practice Challenge</div>
+                  <div class="progress-container" style="margin-top: 0.5rem;"><div class="progress-bar" style="width: 100%; background: var(--accent-green);"></div></div>
+                </div>
+                <div style="font-weight: 600; color: var(--accent-green);"><i class="fa-solid fa-check"></i></div>
+                <div style="color: var(--accent-purple); font-size: 0.8rem; font-weight: 600;">+100 XP</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Badges Grid -->
+        <div class="glass-card badges-card">
+          <div class="section-header">
+            <h3><i class="fa-solid fa-medal"></i> Badge Collection</h3>
+            <div style="font-size: 0.9rem; color: var(--text-secondary);">Unlocked: 8/24</div>
+          </div>
+          <div class="achievements-grid" id="fullBadgesGrid">
+            <!-- JS injected or static HTML -->
+            <div class="achieve-badge">
+              <div class="achieve-icon" style="--accent: #f97316"><i class="fa-solid fa-fire"></i></div>
+              <div class="achieve-info"><h4>7-Day Streak</h4><p>Maintained momentum for a week</p></div>
+            </div>
+            <div class="achieve-badge">
+              <div class="achieve-icon" style="--accent: #eab308"><i class="fa-solid fa-bolt"></i></div>
+              <div class="achieve-info"><h4>Fast Learner</h4><p>Completed 3 courses in a month</p></div>
+            </div>
+            <div class="achieve-badge">
+              <div class="achieve-icon" style="--accent: #3b82f6"><i class="fa-solid fa-moon"></i></div>
+              <div class="achieve-info"><h4>Night Owl</h4><p>Completed a lesson after midnight</p></div>
+            </div>
+            <div class="achieve-badge locked" style="opacity: 0.5; filter: grayscale(100%);">
+              <div class="achieve-icon" style="--accent: #10b981"><i class="fa-solid fa-hammer"></i></div>
+              <div class="achieve-info"><h4>Project Builder</h4><p>Deploy 5 portfolio projects</p></div>
+            </div>
+            <div class="achieve-badge locked" style="opacity: 0.5; filter: grayscale(100%);">
+              <div class="achieve-icon" style="--accent: #a855f7"><i class="fa-solid fa-robot"></i></div>
+              <div class="achieve-info"><h4>AI Explorer</h4><p>Ask the AI Mentor 50 questions</p></div>
+            </div>
+            <div class="achieve-badge locked" style="opacity: 0.5; filter: grayscale(100%);">
+              <div class="achieve-icon" style="--accent: #ef4444"><i class="fa-solid fa-calendar-check"></i></div>
+              <div class="achieve-info"><h4>Consistency Master</h4><p>Log in 30 days in a row</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div><!-- end page-wrapper -->
+  </main>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

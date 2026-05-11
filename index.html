@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ऋStart — Learning Momentum | Growth Command Center</title>
+  <meta name="description"
+    content="ऋStart is your AI-powered learning momentum dashboard. Track XP, streaks, roadmaps, and get personalized AI mentorship." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Ambient Background Blobs -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <!-- Loading Screen -->
+  <div id="loader" class="loader">
+    <div class="loader-inner">
+      <div class="loader-logo">ऋ</div>
+      <div class="loader-text">Initializing Command Center...</div>
+      <div class="loader-bar">
+        <div class="loader-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar Overlay (mobile) -->
+  <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon">ऋ</span>
+        <span class="logo-text">Start</span>
+      </div>
+      <button id="sidebarClose" class="sidebar-close"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <ul>
+        <a href="index.html" class="nav-item active" data-section="dashboard">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Dashboard</span>
+          <div class="nav-glow"></div>
+        </a>
+        <a href="learning.html" class="nav-item" data-section="learning">
+          <i class="fa-solid fa-graduation-cap"></i>
+          <span>Learning</span>
+        </a>
+        <a href="roadmaps.html" class="nav-item" data-section="roadmaps">
+          <i class="fa-solid fa-map"></i>
+          <span>Roadmaps</span>
+        </a>
+        <a href="analytics.html" class="nav-item" data-section="analytics">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>Analytics</span>
+        </a>
+        <a href="ai-mentor.html" class="nav-item" data-section="ai-mentor">
+          <i class="fa-solid fa-robot"></i>
+          <span>AI Mentor</span>
+        </a>
+        <a href="achievements.html" class="nav-item" data-section="achievements">
+          <i class="fa-solid fa-trophy"></i>
+          <span>Achievements</span>
+        </a>
+        <a href="community.html" class="nav-item" data-section="community">
+          <i class="fa-solid fa-users"></i>
+          <span>Community</span>
+        </a>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="settings.html" class="nav-item" data-section="settings">
+        <i class="fa-solid fa-gear"></i>
+        <span>Settings</span>
+      </a>
+      <div class="sidebar-user">
+        <div class="user-avatar-sm">AS</div>
+        <div class="user-info-sm">
+          <span class="user-name-sm">Aditya S.</span>
+          <span class="user-level-sm">Level 12 · Pro</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="main-content" id="mainContent">
+
+    <!-- ===== NAVBAR ===== -->
+    <header class="navbar">
+      <div class="navbar-left">
+        <button id="sidebarToggle" class="hamburger-btn">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="search-bar">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="searchInput" placeholder="Search courses, roadmaps, topics..." />
+          <kbd>⌘K</kbd>
+        </div>
+      </div>
+      <div class="navbar-right">
+        <div class="momentum-badge">
+          <i class="fa-solid fa-bolt"></i>
+          <span id="navMomentum">847</span>
+          <span class="badge-label">MP</span>
+        </div>
+        <button class="icon-btn notif-btn" id="notifBtn">
+          <i class="fa-solid fa-bell"></i>
+          <span class="notif-dot"></span>
+        </button>
+        <button class="icon-btn theme-btn" id="themeToggle" title="Toggle theme">
+          <i class="fa-solid fa-moon" id="themeIcon"></i>
+        </button>
+        <div class="profile-avatar" id="profileAvatar">
+          <span>AS</span>
+          <div class="avatar-ring"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Notification Panel -->
+    <div id="notifPanel" class="notif-panel hidden">
+      <div class="notif-header">
+        <span>Notifications</span>
+        <button class="mark-read">Mark all read</button>
+      </div>
+      <div class="notif-list" id="notifList"></div>
+    </div>
+
+    <!-- ===== PAGE WRAPPER ===== -->
+    <div class="page-wrapper">
+
+      <!-- ===== HERO SECTION ===== -->
+      <section class="hero-section fade-in">
+        <div class="hero-left">
+          <p class="hero-greeting">Welcome back, Aditya 👋</p>
+          <h1 class="hero-heading">Your momentum is <span class="gradient-text">growing.</span></h1>
+          <p class="hero-sub">You've been consistent for <strong>14 days</strong> straight. Your learning velocity is in
+            the top <strong>8%</strong> of all learners this week. Keep pushing. 🚀</p>
+          <div class="hero-actions">
+            <button class="btn btn-primary pulse-btn" id="continueLearningBtn">
+              <i class="fa-solid fa-play"></i> Continue Learning
+            </button>
+            <button class="btn btn-ghost" id="exploreRoadmapsBtn">
+              <i class="fa-solid fa-map"></i> Explore Roadmaps
+            </button>
+          </div>
+          <div class="hero-stats-row">
+            <div class="mini-stat">
+              <span class="mini-val" data-target="847">0</span>
+              <span class="mini-label">Momentum</span>
+            </div>
+            <div class="mini-stat">
+              <span class="mini-val" data-target="14">0</span>
+              <span class="mini-label">Day Streak</span>
+            </div>
+            <div class="mini-stat">
+              <span class="mini-val" data-target="92">0</span>
+              <span class="mini-label">Focus %</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-right">
+          <div class="radial-viz">
+            <div class="radial-rings">
+              <div class="ring ring-outer"></div>
+              <div class="ring ring-mid"></div>
+              <div class="ring ring-inner"></div>
+            </div>
+            <canvas id="momentumGauge" width="280" height="280"></canvas>
+            <div class="radial-center">
+              <span class="radial-score" data-target="847">0</span>
+              <span class="radial-label">Momentum</span>
+            </div>
+            <div class="radial-stats">
+              <div class="radial-stat" style="--angle: 0deg; --radius: 150px;">
+                <div class="rstat-card">
+                  <i class="fa-solid fa-star"></i>
+                  <span class="rstat-val" data-target="12400">0</span>
+                  <span class="rstat-name">XP</span>
+                </div>
+              </div>
+              <div class="radial-stat" style="--angle: 72deg; --radius: 150px;">
+                <div class="rstat-card">
+                  <i class="fa-solid fa-fire"></i>
+                  <span class="rstat-val" data-target="14">0</span>
+                  <span class="rstat-name">Streak</span>
+                </div>
+              </div>
+              <div class="radial-stat" style="--angle: 144deg; --radius: 150px;">
+                <div class="rstat-card">
+                  <i class="fa-solid fa-layer-group"></i>
+                  <span class="rstat-val">12</span>
+                  <span class="rstat-name">Level</span>
+                </div>
+              </div>
+              <div class="radial-stat" style="--angle: 216deg; --radius: 150px;">
+                <div class="rstat-card">
+                  <i class="fa-solid fa-bullseye"></i>
+                  <span class="rstat-val" data-target="92">0</span>
+                  <span class="rstat-name">Focus%</span>
+                </div>
+              </div>
+              <div class="radial-stat" style="--angle: 288deg; --radius: 150px;">
+                <div class="rstat-card">
+                  <i class="fa-solid fa-clock"></i>
+                  <span class="rstat-val" data-target="48">0</span>
+                  <span class="rstat-name">Hrs/Wk</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== KPI CARDS ===== -->
+      <section class="kpi-section fade-in">
+        <div class="kpi-grid">
+          <div class="kpi-card" style="--accent: #a855f7;">
+            <div class="kpi-icon"><i class="fa-solid fa-bolt"></i></div>
+            <div class="kpi-body">
+              <span class="kpi-val" data-target="847">0</span>
+              <span class="kpi-label">Momentum Score</span>
+              <span class="kpi-delta up"><i class="fa-solid fa-arrow-trend-up"></i> +12% this week</span>
+            </div>
+            <div class="kpi-glow"></div>
+          </div>
+          <div class="kpi-card" style="--accent: #f97316;">
+            <div class="kpi-icon"><i class="fa-solid fa-fire"></i></div>
+            <div class="kpi-body">
+              <span class="kpi-val" data-target="14">0</span>
+              <span class="kpi-label">Daily Streak</span>
+              <span class="kpi-delta up"><i class="fa-solid fa-arrow-trend-up"></i> Personal best!</span>
+            </div>
+            <div class="kpi-glow"></div>
+          </div>
+          <div class="kpi-card" style="--accent: #3b82f6;">
+            <div class="kpi-icon"><i class="fa-solid fa-clock"></i></div>
+            <div class="kpi-body">
+              <span class="kpi-val" data-target="48">0</span>
+              <span class="kpi-label">Learning Hours</span>
+              <span class="kpi-delta up"><i class="fa-solid fa-arrow-trend-up"></i> +5h vs last week</span>
+            </div>
+            <div class="kpi-glow"></div>
+          </div>
+          <div class="kpi-card" style="--accent: #ec4899;">
+            <div class="kpi-icon"><i class="fa-solid fa-star"></i></div>
+            <div class="kpi-body">
+              <span class="kpi-val" data-target="12400">0</span>
+              <span class="kpi-label">XP Earned</span>
+              <span class="kpi-delta up"><i class="fa-solid fa-arrow-trend-up"></i> +840 today</span>
+            </div>
+            <div class="kpi-glow"></div>
+          </div>
+          <div class="kpi-card" style="--accent: #10b981;">
+            <div class="kpi-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+            <div class="kpi-body">
+              <span class="kpi-val" data-target="7">0</span>
+              <span class="kpi-label">Courses Completed</span>
+              <span class="kpi-delta up"><i class="fa-solid fa-arrow-trend-up"></i> 2 this month</span>
+            </div>
+            <div class="kpi-glow"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== FUTURE PROJECTION BANNER ===== -->
+      <section class="projection-banner fade-in">
+        <div class="glass-card projection-card">
+          <div class="proj-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+          <p><strong>AI Projection:</strong> At your current pace, you’ll complete the <span class="gradient-text">Full
+              Stack Roadmap</span> in <strong>64 days</strong>.</p>
+        </div>
+      </section>
+
+      <!-- ===== CONTINUE LEARNING + LIVE ACTIVITY ===== -->
+      <section class="mid-section fade-in">
+        <!-- Continue Learning -->
+        <div class="glass-card continue-learning-card">
+          <div class="card-header">
+            <h2><i class="fa-solid fa-play-circle"></i> Continue Learning</h2>
+            <span class="card-badge">In Progress</span>
+          </div>
+          <div class="course-list" id="courseList">
+            <!-- JS injected -->
+          </div>
+        </div>
+
+        <!-- Live Activity -->
+        <div class="glass-card live-activity-card">
+          <div class="card-header">
+            <h2><i class="fa-solid fa-satellite-dish"></i> Live Activity</h2>
+            <span class="live-dot"></span>
+          </div>
+          <div class="activity-feed" id="activityFeed">
+          </div>
+        </div>
+
+        <!-- Upcoming Goals -->
+        <div class="glass-card goals-card">
+          <div class="card-header">
+            <h2><i class="fa-solid fa-bullseye"></i> Upcoming Goals</h2>
+          </div>
+          <div class="goals-list">
+            <div class="goal-item">
+              <input type="checkbox" checked>
+              <span class="goal-text">Finish React Router module</span>
+            </div>
+            <div class="goal-item">
+              <input type="checkbox">
+              <span class="goal-text">Complete 5 DSA problems</span>
+            </div>
+            <div class="goal-item">
+              <input type="checkbox">
+              <span class="goal-text">Watch System Design video</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Focus Timer -->
+        <div class="glass-card focus-timer-card">
+          <div class="card-header">
+            <h2><i class="fa-solid fa-stopwatch"></i> Focus Timer</h2>
+            <button class="btn-ghost-sm"><i class="fa-solid fa-music"></i> Ambient</button>
+          </div>
+          <div class="timer-display">
+            <svg class="timer-ring" width="120" height="120">
+              <circle class="timer-ring-bg" cx="60" cy="60" r="54"></circle>
+              <circle class="timer-ring-fill" id="timerRing" cx="60" cy="60" r="54"></circle>
+            </svg>
+            <div class="timer-time" id="timerTime">30:00</div>
+          </div>
+          <div class="timer-presets" style="display:flex; gap:0.5rem; justify-content:center; margin-bottom: 1rem;">
+            <button class="preset-btn" data-time="15">15m</button>
+            <button class="preset-btn active" data-time="30">30m</button>
+            <button class="preset-btn" data-time="45">45m</button>
+            <button class="preset-btn" data-time="60">60m</button>
+          </div>
+          <div class="timer-controls">
+            <button class="btn btn-primary btn-sm" id="startTimerBtn"><i class="fa-solid fa-play"></i> Start
+              Focus</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== ANALYTICS SECTION ===== -->
+      <section class="analytics-section fade-in">
+        <div class="section-header">
+          <h2>Analytics <span class="gradient-text">Overview</span></h2>
+          <div class="time-filter">
+            <button class="tf-btn active" data-period="week">Week</button>
+            <button class="tf-btn" data-period="month">Month</button>
+            <button class="tf-btn" data-period="year">Year</button>
+          </div>
+        </div>
+        <div class="charts-grid">
+          <div class="glass-card chart-card wide-card heatmap-card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-fire"></i> Learning Heatmap</h3>
+              <span class="card-badge">Last 6 Months</span>
+            </div>
+            <div class="heatmap-grid" id="learningHeatmap">
+              <!-- JS injected -->
+            </div>
+          </div>
+          <div class="glass-card chart-card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-chart-line"></i> Consistency</h3>
+            </div>
+            <canvas id="consistencyChart"></canvas>
+          </div>
+          <div class="glass-card chart-card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-circle-half-stroke"></i> Focus Score</h3>
+            </div>
+            <canvas id="focusChart"></canvas>
+          </div>
+          <div class="glass-card chart-card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-trending-up"></i> Productivity</h3>
+            </div>
+            <canvas id="productivityChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== ROADMAP EXPLORER ===== -->
+      <section class="roadmap-section fade-in">
+        <div class="section-header">
+          <h2>Roadmap <span class="gradient-text">Explorer</span></h2>
+          <button class="btn btn-ghost-sm">View All <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+        <div class="roadmap-scroll-wrapper">
+          <div class="roadmap-track" id="roadmapTrack">
+            <!-- JS injected -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== AI MENTOR + ACHIEVEMENTS ===== -->
+      <section class="bottom-section fade-in">
+        <!-- AI Mentor -->
+        <div class="glass-card ai-mentor-card">
+          <div class="card-header">
+            <h2><i class="fa-solid fa-robot"></i> AI Mentor</h2>
+            <span class="ai-status-badge"><span class="pulse-dot"></span> Online</span>
+          </div>
+          <div class="ai-suggestions" id="aiSuggestions">
+            <!-- JS injected -->
+          </div>
+          <div class="ai-chat-area" id="aiChatArea">
+            <div class="ai-welcome-msg">
+              <div class="ai-avatar-lg"><i class="fa-solid fa-robot"></i></div>
+              <p>Hey Aditya! I've analyzed your learning patterns. You're excelling in JavaScript but I notice you've
+                been avoiding system design topics. Want me to build a personalized plan?</p>
+            </div>
+          </div>
+          <div class="ai-input-area">
+            <input type="text" id="aiInput" placeholder="What should I learn next?" />
+            <button class="ai-send-btn" id="aiSendBtn"><i class="fa-solid fa-paper-plane"></i></button>
+          </div>
+        </div>
+
+        <!-- Achievements -->
+        <div class="glass-card achievements-card">
+          <div class="card-header">
+            <h2><i class="fa-solid fa-trophy"></i> Achievements</h2>
+            <span class="card-badge">4 unlocked</span>
+          </div>
+          <div class="achievements-grid" id="achievementsGrid">
+            <!-- JS injected -->
+          </div>
+          <div class="xp-progress-bar">
+            <div class="xp-bar-header">
+              <span>Level 12 → 13</span>
+              <span>12,400 / 15,000 XP</span>
+            </div>
+            <div class="xp-track">
+              <div class="xp-fill" style="width: 0%" data-target="82"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- end page-wrapper -->
+  </main>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
