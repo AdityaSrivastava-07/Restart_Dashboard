@@ -3,10 +3,62 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  // --- 0. Load Appearance Settings ---
+  const loadAppearanceSettings = () => {
+    const savedTheme = localStorage.getItem('ristart-theme') || 'dark';
+    const savedAccent = localStorage.getItem('ristart-accent') || '#a855f7';
+    const savedFontSize = localStorage.getItem('ristart-fontSize') || '16';
+    const savedReduceAnim = localStorage.getItem('ristart-reduceAnim') === 'true';
+    const savedCompactSidebar = localStorage.getItem('ristart-compactSidebar') === 'true';
+
+    // Apply Theme
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    const themeIconEl = document.getElementById('themeIcon');
+    if (themeIconEl) {
+      themeIconEl.classList.toggle('fa-moon', savedTheme === 'dark');
+      themeIconEl.classList.toggle('fa-sun', savedTheme === 'light');
+    }
+    const themeCards = document.querySelectorAll('.s-theme-card');
+    themeCards.forEach(c => {
+      c.classList.toggle('active', c.getAttribute('data-theme-val') === savedTheme);
+    });
+
+    // Apply Accent
+    document.documentElement.style.setProperty('--accent-purple', savedAccent);
+    const colorDots = document.querySelectorAll('.s-color-dot');
+    colorDots.forEach(d => {
+      d.classList.toggle('active', d.getAttribute('data-color') === savedAccent);
+    });
+
+    // Apply Font Size
+    document.documentElement.style.fontSize = savedFontSize + 'px';
+    const fontSlider = document.getElementById('fontSizeSlider');
+    const fontSizeVal = document.getElementById('fontSizeVal');
+    if (fontSlider && fontSizeVal) {
+      fontSlider.value = savedFontSize;
+      fontSizeVal.textContent = savedFontSize + 'px';
+    }
+
+    // Apply Animations
+    document.body.style.setProperty('--transition-fast', savedReduceAnim ? '0s' : '0.15s ease');
+    document.body.style.setProperty('--transition-normal', savedReduceAnim ? '0s' : '0.3s ease');
+    const reduceAnimToggle = document.getElementById('reduceAnimToggle');
+    if (reduceAnimToggle) reduceAnimToggle.checked = savedReduceAnim;
+
+    // Apply Sidebar
+    document.body.classList.toggle('sidebar-collapsed', savedCompactSidebar);
+    const compactSidebarToggle = document.getElementById('compactSidebarToggle');
+    if (compactSidebarToggle) compactSidebarToggle.checked = savedCompactSidebar;
+
+    return savedTheme;
+  };
+
+  const currentTheme = loadAppearanceSettings();
+
   // --- 1. Loader & Initialization ---
   const loader = document.getElementById('loader');
   setTimeout(() => {
-    loader.classList.add('hidden');
+    if (loader) loader.classList.add('hidden');
     initAnimations();
   }, 1500);
 
@@ -53,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
 
     html.setAttribute('data-theme', newTheme);
+    localStorage.setItem('ristart-theme', newTheme);
 
     if (newTheme === 'light') {
       themeIcon.classList.remove('fa-moon');
@@ -61,6 +114,12 @@ document.addEventListener('DOMContentLoaded', () => {
       themeIcon.classList.remove('fa-sun');
       themeIcon.classList.add('fa-moon');
     }
+
+    // Sync settings cards if on settings page
+    const themeCards = document.querySelectorAll('.s-theme-card');
+    themeCards.forEach(c => {
+      c.classList.toggle('active', c.getAttribute('data-theme-val') === newTheme);
+    });
 
     // Re-render charts to match theme
     initCharts(newTheme);
@@ -317,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Init Charts
-    initCharts('dark');
+    initCharts(document.documentElement.getAttribute('data-theme') || 'dark');
   }
 
 
@@ -1420,11 +1479,14 @@ document.addEventListener('DOMContentLoaded', () => {
       card.classList.add('active');
       const val = card.getAttribute('data-theme-val');
       document.documentElement.setAttribute('data-theme', val);
+      localStorage.setItem('ristart-theme', val);
       const themeIconEl = document.getElementById('themeIcon');
       if (themeIconEl) {
         themeIconEl.classList.toggle('fa-moon', val === 'dark');
         themeIconEl.classList.toggle('fa-sun', val === 'light');
       }
+      // Re-render charts to match theme
+      initCharts(val);
       showToast(`Theme switched to ${val}`, 'success');
     });
   });
@@ -1436,6 +1498,7 @@ document.addEventListener('DOMContentLoaded', () => {
       dot.classList.add('active');
       const color = dot.getAttribute('data-color');
       document.documentElement.style.setProperty('--accent-purple', color);
+      localStorage.setItem('ristart-accent', color);
       showToast(`Accent color updated`, 'success');
     });
   });
@@ -1445,8 +1508,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const fontSizeVal = document.getElementById('fontSizeVal');
   if (fontSlider && fontSizeVal) {
     fontSlider.addEventListener('input', () => {
-      fontSizeVal.textContent = fontSlider.value + 'px';
-      document.documentElement.style.fontSize = fontSlider.value + 'px';
+      const val = fontSlider.value;
+      fontSizeVal.textContent = val + 'px';
+      document.documentElement.style.fontSize = val + 'px';
+      localStorage.setItem('ristart-fontSize', val);
     });
   }
 
@@ -1454,9 +1519,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const reduceAnimToggle = document.getElementById('reduceAnimToggle');
   if (reduceAnimToggle) {
     reduceAnimToggle.addEventListener('change', () => {
-      document.body.style.setProperty('--transition-fast', reduceAnimToggle.checked ? '0s' : '0.15s ease');
-      document.body.style.setProperty('--transition-normal', reduceAnimToggle.checked ? '0s' : '0.3s ease');
-      showToast(reduceAnimToggle.checked ? 'Animations reduced' : 'Animations enabled', 'info');
+      const isChecked = reduceAnimToggle.checked;
+      document.body.style.setProperty('--transition-fast', isChecked ? '0s' : '0.15s ease');
+      document.body.style.setProperty('--transition-normal', isChecked ? '0s' : '0.3s ease');
+      localStorage.setItem('ristart-reduceAnim', isChecked);
+      showToast(isChecked ? 'Animations reduced' : 'Animations enabled', 'info');
     });
   }
 
@@ -1464,8 +1531,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const compactSidebarToggle = document.getElementById('compactSidebarToggle');
   if (compactSidebarToggle) {
     compactSidebarToggle.addEventListener('change', () => {
-      document.body.classList.toggle('sidebar-collapsed', compactSidebarToggle.checked);
-      showToast(compactSidebarToggle.checked ? 'Sidebar collapsed' : 'Sidebar expanded', 'info');
+      const isChecked = compactSidebarToggle.checked;
+      document.body.classList.toggle('sidebar-collapsed', isChecked);
+      localStorage.setItem('ristart-compactSidebar', isChecked);
+      showToast(isChecked ? 'Sidebar collapsed' : 'Sidebar expanded', 'info');
     });
   }
 
