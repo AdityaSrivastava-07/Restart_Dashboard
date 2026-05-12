@@ -590,7 +590,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 1. Simple Toast Notification System
   const showToast = (message, type = 'success') => {
-    return; // User requested to disable pop-up messages
     let toastContainer = document.getElementById('toast-container');
     if (!toastContainer) {
       toastContainer = document.createElement('div');
@@ -1392,6 +1391,244 @@ document.addEventListener('DOMContentLoaded', () => {
           selectedMatchHook = null;
         }
       });
+    });
+  }
+
+  /* =========================================
+     SETTINGS PAGE LOGIC
+     ========================================= */
+  const settingsTabBtns = document.querySelectorAll('.settings-tab-btn');
+  const settingsSections = document.querySelectorAll('.settings-section');
+
+  if (settingsTabBtns.length && settingsSections.length) {
+    settingsTabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        settingsTabBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const target = btn.getAttribute('data-settings-tab');
+        settingsSections.forEach(s => s.classList.remove('active'));
+        const targetSection = document.getElementById('settings-' + target);
+        if (targetSection) targetSection.classList.add('active');
+      });
+    });
+  }
+
+  // Theme Cards
+  document.querySelectorAll('.s-theme-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.s-theme-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      const val = card.getAttribute('data-theme-val');
+      document.documentElement.setAttribute('data-theme', val);
+      const themeIconEl = document.getElementById('themeIcon');
+      if (themeIconEl) {
+        themeIconEl.classList.toggle('fa-moon', val === 'dark');
+        themeIconEl.classList.toggle('fa-sun', val === 'light');
+      }
+      showToast(`Theme switched to ${val}`, 'success');
+    });
+  });
+
+  // Accent Color
+  document.querySelectorAll('.s-color-dot').forEach(dot => {
+    dot.addEventListener('click', () => {
+      document.querySelectorAll('.s-color-dot').forEach(d => d.classList.remove('active'));
+      dot.classList.add('active');
+      const color = dot.getAttribute('data-color');
+      document.documentElement.style.setProperty('--accent-purple', color);
+      showToast(`Accent color updated`, 'success');
+    });
+  });
+
+  // Font Size
+  const fontSlider = document.getElementById('fontSizeSlider');
+  const fontSizeVal = document.getElementById('fontSizeVal');
+  if (fontSlider && fontSizeVal) {
+    fontSlider.addEventListener('input', () => {
+      fontSizeVal.textContent = fontSlider.value + 'px';
+      document.documentElement.style.fontSize = fontSlider.value + 'px';
+    });
+  }
+
+  // Reduce Animations
+  const reduceAnimToggle = document.getElementById('reduceAnimToggle');
+  if (reduceAnimToggle) {
+    reduceAnimToggle.addEventListener('change', () => {
+      document.body.style.setProperty('--transition-fast', reduceAnimToggle.checked ? '0s' : '0.15s ease');
+      document.body.style.setProperty('--transition-normal', reduceAnimToggle.checked ? '0s' : '0.3s ease');
+      showToast(reduceAnimToggle.checked ? 'Animations reduced' : 'Animations enabled', 'info');
+    });
+  }
+
+  // Compact Sidebar
+  const compactSidebarToggle = document.getElementById('compactSidebarToggle');
+  if (compactSidebarToggle) {
+    compactSidebarToggle.addEventListener('change', () => {
+      document.body.classList.toggle('sidebar-collapsed', compactSidebarToggle.checked);
+      showToast(compactSidebarToggle.checked ? 'Sidebar collapsed' : 'Sidebar expanded', 'info');
+    });
+  }
+
+  // Password Strength
+  const newPasswordInput = document.getElementById('newPassword');
+  const psFill = document.getElementById('psFill');
+  const psText = document.getElementById('psText');
+  if (newPasswordInput && psFill && psText) {
+    newPasswordInput.addEventListener('input', () => {
+      const val = newPasswordInput.value;
+      let strength = 0;
+      if (val.length >= 6) strength++;
+      if (val.length >= 10) strength++;
+      if (/[A-Z]/.test(val)) strength++;
+      if (/[0-9]/.test(val)) strength++;
+      if (/[^A-Za-z0-9]/.test(val)) strength++;
+      const levels = [
+        { w: '0%', c: 'var(--border-glass)', t: 'Enter a password' },
+        { w: '20%', c: '#ef4444', t: 'Very weak' },
+        { w: '40%', c: '#f97316', t: 'Weak' },
+        { w: '60%', c: '#eab308', t: 'Fair' },
+        { w: '80%', c: '#10b981', t: 'Strong' },
+        { w: '100%', c: '#22c55e', t: 'Very strong' }
+      ];
+      const l = levels[Math.min(strength, 5)];
+      psFill.style.width = l.w;
+      psFill.style.background = l.c;
+      psText.textContent = l.t;
+      psText.style.color = l.c;
+    });
+  }
+
+  // Change Password
+  const changePasswordBtn = document.getElementById('changePasswordBtn');
+  if (changePasswordBtn) {
+    changePasswordBtn.addEventListener('click', () => {
+      const np = document.getElementById('newPassword');
+      const cp = document.getElementById('confirmPassword');
+      if (!np || !cp) return;
+      if (!np.value) { showToast('Please enter a new password', 'info'); return; }
+      if (np.value !== cp.value) { showToast('Passwords do not match!', 'info'); return; }
+      showToast('Password updated successfully!', 'success');
+      np.value = ''; cp.value = '';
+      if (psFill) { psFill.style.width = '0%'; }
+      if (psText) { psText.textContent = 'Enter a password'; psText.style.color = 'var(--text-muted)'; }
+    });
+  }
+
+  // Save Profile
+  const saveProfileBtn = document.getElementById('saveProfileBtn');
+  if (saveProfileBtn) {
+    saveProfileBtn.addEventListener('click', () => {
+      const firstName = document.getElementById('profileFirstName');
+      const lastName = document.getElementById('profileLastName');
+      if (!firstName || !lastName) return;
+
+      const fn = firstName.value.trim() || 'User';
+      const ln = lastName.value.trim() || '';
+      const initials = (fn[0] || '') + (ln[0] || '');
+      const displayName = fn + (ln ? ' ' + ln[0] + '.' : '');
+
+      // Update sidebar user name
+      const sidebarName = document.querySelector('.user-name-sm');
+      if (sidebarName) sidebarName.textContent = displayName;
+
+      // Update all avatar initials
+      document.querySelectorAll('.user-avatar-sm').forEach(av => {
+        if (av.style.width === '80px') return; // skip the large profile avatar
+        av.textContent = initials.toUpperCase();
+      });
+      document.querySelectorAll('.profile-avatar span').forEach(s => {
+        s.textContent = initials.toUpperCase();
+      });
+
+      // Update the large settings avatar too
+      const settingsAvatar = document.querySelector('#settings-profile .user-avatar-sm');
+      if (settingsAvatar) settingsAvatar.textContent = initials.toUpperCase();
+
+      // Save to localStorage
+      localStorage.setItem('ristart-profile', JSON.stringify({ firstName: fn, lastName: ln }));
+
+      showToast('Profile saved successfully!', 'success');
+    });
+  }
+
+  // Log Out Profile
+  const logoutProfileBtn = document.getElementById('logoutProfileBtn');
+  if (logoutProfileBtn) {
+    logoutProfileBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to log out?')) {
+        localStorage.removeItem('ristart-profile');
+        showToast('Logging out...', 'info');
+        setTimeout(() => {
+          window.location.href = 'https://restart-star-ff1d05.netlify.app/';
+        }, 600);
+      }
+    });
+  }
+
+  // Load saved profile on page load
+  const savedProfile = localStorage.getItem('ristart-profile');
+  if (savedProfile) {
+    try {
+      const { firstName, lastName } = JSON.parse(savedProfile);
+      const fnInput = document.getElementById('profileFirstName');
+      const lnInput = document.getElementById('profileLastName');
+      if (fnInput && firstName) fnInput.value = firstName;
+      if (lnInput && lastName) lnInput.value = lastName;
+
+      const initials = (firstName?.[0] || '') + (lastName?.[0] || '');
+      const displayName = firstName + (lastName ? ' ' + lastName[0] + '.' : '');
+
+      const sidebarName = document.querySelector('.user-name-sm');
+      if (sidebarName) sidebarName.textContent = displayName;
+
+      document.querySelectorAll('.user-avatar-sm').forEach(av => {
+        if (av.style.width === '80px') return;
+        av.textContent = initials.toUpperCase();
+      });
+      document.querySelectorAll('.profile-avatar span').forEach(s => {
+        s.textContent = initials.toUpperCase();
+      });
+
+      const settingsAvatar = document.querySelector('#settings-profile .user-avatar-sm');
+      if (settingsAvatar) settingsAvatar.textContent = initials.toUpperCase();
+
+      // Update hero greeting on dashboard
+      const heroGreeting = document.getElementById('heroGreeting');
+      if (heroGreeting) heroGreeting.textContent = `Welcome back, ${firstName} 👋`;
+    } catch(e) {}
+  }
+
+  // Export Data
+  const exportDataBtn = document.getElementById('exportDataBtn');
+  if (exportDataBtn) {
+    exportDataBtn.addEventListener('click', () => {
+      const data = JSON.stringify({ user: 'Aditya', xp: 12400, streak: 14, level: 12 }, null, 2);
+      const blob = new Blob([data], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'ristart-data.json'; a.click();
+      URL.revokeObjectURL(url);
+      showToast('Data exported!', 'success');
+    });
+  }
+
+  // Delete Account
+  const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+  if (deleteAccountBtn) {
+    deleteAccountBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+        showToast('Account deletion requested. (Demo mode)', 'info');
+      }
+    });
+  }
+
+  // Clear AI Memory
+  const clearAiMemoryBtn = document.getElementById('clearAiMemoryBtn');
+  if (clearAiMemoryBtn) {
+    clearAiMemoryBtn.addEventListener('click', () => {
+      if (confirm('Clear all AI memory and conversation context?')) {
+        showToast('AI memory cleared successfully!', 'success');
+      }
     });
   }
 

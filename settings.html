@@ -148,63 +148,197 @@
         
         <!-- Sidebar Navigation -->
         <div class="glass-card settings-sidebar" style="display: flex; flex-direction: column; gap: 0.5rem; height: fit-content;">
-          <button class="tab-btn active" style="text-align: left; padding: 1rem; border-left: 2px solid var(--accent-purple); border-bottom: none;"><i class="fa-regular fa-user" style="width: 20px;"></i> Profile</button>
-          <button class="tab-btn" style="text-align: left; padding: 1rem; border-bottom: none;"><i class="fa-solid fa-palette" style="width: 20px;"></i> Appearance</button>
-          <button class="tab-btn" style="text-align: left; padding: 1rem; border-bottom: none;"><i class="fa-regular fa-bell" style="width: 20px;"></i> Notifications</button>
-          <button class="tab-btn" style="text-align: left; padding: 1rem; border-bottom: none;"><i class="fa-solid fa-shield-halved" style="width: 20px;"></i> Privacy & Security</button>
-          <button class="tab-btn" style="text-align: left; padding: 1rem; border-bottom: none;"><i class="fa-solid fa-robot" style="width: 20px;"></i> AI Preferences</button>
+          <button class="settings-tab-btn active" data-settings-tab="profile"><i class="fa-regular fa-user" style="width: 20px;"></i> Profile</button>
+          <button class="settings-tab-btn" data-settings-tab="appearance"><i class="fa-solid fa-palette" style="width: 20px;"></i> Appearance</button>
+          <button class="settings-tab-btn" data-settings-tab="notifications"><i class="fa-regular fa-bell" style="width: 20px;"></i> Notifications</button>
+          <button class="settings-tab-btn" data-settings-tab="privacy"><i class="fa-solid fa-shield-halved" style="width: 20px;"></i> Privacy & Security</button>
+          <button class="settings-tab-btn" data-settings-tab="ai"><i class="fa-solid fa-robot" style="width: 20px;"></i> AI Preferences</button>
         </div>
 
         <!-- Settings Content Area -->
         <div class="glass-card settings-content">
-          
-          <div class="settings-section" id="section-profile">
-            <h2 style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">Profile Settings</h2>
-            
-            <div style="display: flex; align-items: center; gap: 2rem; margin-bottom: 2rem;" class="settings-avatar-row">
+
+          <!-- ===== PROFILE SECTION ===== -->
+          <div class="settings-section active" id="settings-profile">
+            <h2 class="settings-section-title">Profile Settings</h2>
+            <div class="settings-avatar-row">
               <div class="user-avatar-sm" style="width: 80px; height: 80px; font-size: 2rem; border-radius: 50%; display: flex; justify-content: center; align-items: center;">AS</div>
               <div>
                 <button class="btn btn-primary btn-sm" style="margin-bottom: 0.5rem;">Change Avatar</button>
                 <div style="font-size: 0.8rem; color: var(--text-muted);">JPG, GIF or PNG. Max size of 800K</div>
               </div>
             </div>
-            
             <div class="settings-form-row">
-              <div class="form-group" style="display: flex; flex-direction: column; gap: 0.5rem;">
-                <label style="font-size: 0.85rem; color: var(--text-secondary);">First Name</label>
-                <input type="text" value="Aditya" style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); padding: 0.8rem; border-radius: var(--radius-md); color: white; font-family: var(--font-body); outline: none;">
-              </div>
-              <div class="form-group" style="display: flex; flex-direction: column; gap: 0.5rem;">
-                <label style="font-size: 0.85rem; color: var(--text-secondary);">Last Name</label>
-                <input type="text" value="Srivastava" style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); padding: 0.8rem; border-radius: var(--radius-md); color: white; font-family: var(--font-body); outline: none;">
-              </div>
+              <div class="s-field"><label>First Name</label><input type="text" value="Aditya" id="profileFirstName"></div>
+              <div class="s-field"><label>Last Name</label><input type="text" value="Srivastava" id="profileLastName"></div>
             </div>
-            
-            <div class="form-group" style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem;">
-              <label style="font-size: 0.85rem; color: var(--text-secondary);">Email Address</label>
-              <input type="email" value="aditya@example.com" style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); padding: 0.8rem; border-radius: var(--radius-md); color: white; font-family: var(--font-body); outline: none;">
+            <div class="s-field"><label>Email Address</label><input type="email" value="aditya@example.com"></div>
+            <div class="s-field"><label>Bio</label><textarea rows="4">Full-stack developer passionate about building futuristic interfaces and scalable backends.</textarea></div>
+            <div class="s-toggle-row highlight">
+              <div><h4>Productivity Mode</h4><p>Enable minimal UI for deep work sessions</p></div>
+              <label class="s-switch"><input type="checkbox"><span class="s-slider"></span></label>
             </div>
-            
-            <div class="form-group" style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 2rem;">
-              <label style="font-size: 0.85rem; color: var(--text-secondary);">Bio</label>
-              <textarea rows="4" style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); padding: 0.8rem; border-radius: var(--radius-md); color: white; font-family: var(--font-body); resize: none; outline: none;">Full-stack developer passionate about building futuristic interfaces and scalable backends.</textarea>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              <button class="btn btn-primary" id="saveProfileBtn">Save Changes</button>
+              <button class="btn s-danger-btn" id="logoutProfileBtn"><i class="fa-solid fa-right-from-bracket"></i> Log Out</button>
             </div>
-            
-            <div class="form-group" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; padding: 1rem; background: rgba(168, 85, 247, 0.05); border-radius: var(--radius-md);">
-              <div>
-                <h4 style="margin-bottom: 0.2rem;">Productivity Mode</h4>
-                <div style="font-size: 0.85rem; color: var(--text-secondary);">Enable minimal UI for deep work sessions</div>
-              </div>
-              <label style="position: relative; display: inline-block; width: 40px; height: 20px;">
-                <input type="checkbox" style="opacity: 0; width: 0; height: 0;">
-                <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border-glass); transition: .4s; border-radius: 20px;"></span>
-                <span style="position: absolute; content: ''; height: 16px; width: 16px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%;"></span>
-              </label>
-            </div>
-            
-            <button class="btn btn-primary">Save Changes</button>
           </div>
-          
+
+          <!-- ===== APPEARANCE SECTION ===== -->
+          <div class="settings-section" id="settings-appearance">
+            <h2 class="settings-section-title">Appearance</h2>
+
+            <div class="s-group">
+              <h3 class="s-group-title"><i class="fa-solid fa-circle-half-stroke"></i> Theme</h3>
+              <div class="s-theme-picker">
+                <button class="s-theme-card active" data-theme-val="dark">
+                  <div class="s-theme-preview dark-preview"><div class="s-tp-sidebar"></div><div class="s-tp-main"><div class="s-tp-bar"></div><div class="s-tp-content"></div></div></div>
+                  <span>Dark</span>
+                </button>
+                <button class="s-theme-card" data-theme-val="light">
+                  <div class="s-theme-preview light-preview"><div class="s-tp-sidebar"></div><div class="s-tp-main"><div class="s-tp-bar"></div><div class="s-tp-content"></div></div></div>
+                  <span>Light</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="s-group">
+              <h3 class="s-group-title"><i class="fa-solid fa-swatchbook"></i> Accent Color</h3>
+              <div class="s-color-picker">
+                <button class="s-color-dot active" data-color="#a855f7" style="--dot-color: #a855f7;" title="Purple"></button>
+                <button class="s-color-dot" data-color="#3b82f6" style="--dot-color: #3b82f6;" title="Blue"></button>
+                <button class="s-color-dot" data-color="#10b981" style="--dot-color: #10b981;" title="Green"></button>
+                <button class="s-color-dot" data-color="#f97316" style="--dot-color: #f97316;" title="Orange"></button>
+                <button class="s-color-dot" data-color="#ec4899" style="--dot-color: #ec4899;" title="Pink"></button>
+                <button class="s-color-dot" data-color="#eab308" style="--dot-color: #eab308;" title="Gold"></button>
+              </div>
+            </div>
+
+            <div class="s-group">
+              <h3 class="s-group-title"><i class="fa-solid fa-font"></i> Font Size</h3>
+              <div class="s-font-slider">
+                <span class="s-fs-label">A</span>
+                <input type="range" min="12" max="20" value="16" id="fontSizeSlider" class="s-range">
+                <span class="s-fs-label big">A</span>
+                <span class="s-fs-val" id="fontSizeVal">16px</span>
+              </div>
+            </div>
+
+            <div class="s-toggle-row">
+              <div><h4>Reduce Animations</h4><p>Disable motion effects for accessibility</p></div>
+              <label class="s-switch"><input type="checkbox" id="reduceAnimToggle"><span class="s-slider"></span></label>
+            </div>
+            <div class="s-toggle-row">
+              <div><h4>Compact Sidebar</h4><p>Collapse the sidebar to icon-only mode</p></div>
+              <label class="s-switch"><input type="checkbox" id="compactSidebarToggle"><span class="s-slider"></span></label>
+            </div>
+          </div>
+
+          <!-- ===== NOTIFICATIONS SECTION ===== -->
+          <div class="settings-section" id="settings-notifications">
+            <h2 class="settings-section-title">Notifications</h2>
+
+            <div class="s-group">
+              <h3 class="s-group-title"><i class="fa-solid fa-envelope"></i> Email Notifications</h3>
+              <div class="s-toggle-row"><div><h4>Weekly Progress Report</h4><p>Get a summary of your learning stats every Monday</p></div><label class="s-switch"><input type="checkbox" checked><span class="s-slider"></span></label></div>
+              <div class="s-toggle-row"><div><h4>Course Recommendations</h4><p>Receive AI-curated course suggestions</p></div><label class="s-switch"><input type="checkbox" checked><span class="s-slider"></span></label></div>
+              <div class="s-toggle-row"><div><h4>Achievement Unlocked</h4><p>Get notified when you earn a new badge</p></div><label class="s-switch"><input type="checkbox" checked><span class="s-slider"></span></label></div>
+            </div>
+
+            <div class="s-group">
+              <h3 class="s-group-title"><i class="fa-solid fa-desktop"></i> Push Notifications</h3>
+              <div class="s-toggle-row"><div><h4>Streak Reminder</h4><p>Daily reminder to maintain your learning streak</p></div><label class="s-switch"><input type="checkbox" checked><span class="s-slider"></span></label></div>
+              <div class="s-toggle-row"><div><h4>Community Mentions</h4><p>When someone mentions you in a post or reply</p></div><label class="s-switch"><input type="checkbox"><span class="s-slider"></span></label></div>
+              <div class="s-toggle-row"><div><h4>Focus Timer Alerts</h4><p>Sound and visual alerts for timer completion</p></div><label class="s-switch"><input type="checkbox" checked><span class="s-slider"></span></label></div>
+            </div>
+
+            <div class="s-group">
+              <h3 class="s-group-title"><i class="fa-solid fa-moon"></i> Quiet Hours</h3>
+              <div class="settings-form-row">
+                <div class="s-field"><label>From</label><input type="time" value="22:00"></div>
+                <div class="s-field"><label>To</label><input type="time" value="08:00"></div>
+              </div>
+              <div class="s-toggle-row"><div><h4>Enable Quiet Hours</h4><p>Mute all notifications during this window</p></div><label class="s-switch"><input type="checkbox"><span class="s-slider"></span></label></div>
+            </div>
+          </div>
+
+          <!-- ===== PRIVACY & SECURITY SECTION ===== -->
+          <div class="settings-section" id="settings-privacy">
+            <h2 class="settings-section-title">Privacy & Security</h2>
+
+            <div class="s-group">
+              <h3 class="s-group-title"><i class="fa-solid fa-lock"></i> Change Password</h3>
+              <div class="s-field"><label>Current Password</label><input type="password" placeholder="Enter current password"></div>
+              <div class="settings-form-row">
+                <div class="s-field"><label>New Password</label><input type="password" placeholder="Enter new password" id="newPassword"></div>
+                <div class="s-field"><label>Confirm New Password</label><input type="password" placeholder="Confirm new password" id="confirmPassword"></div>
+              </div>
+              <div class="s-password-strength" id="passwordStrength"><div class="s-ps-bar"><div class="s-ps-fill" id="psFill"></div></div><span id="psText">Enter a password</span></div>
+              <button class="btn btn-primary btn-sm" id="changePasswordBtn">Update Password</button>
+            </div>
+
+            <div class="s-group">
+              <h3 class="s-group-title"><i class="fa-solid fa-eye"></i> Profile Visibility</h3>
+              <div class="s-toggle-row"><div><h4>Public Profile</h4><p>Allow other learners to see your profile and stats</p></div><label class="s-switch"><input type="checkbox" checked><span class="s-slider"></span></label></div>
+              <div class="s-toggle-row"><div><h4>Show Learning Activity</h4><p>Display your learning heatmap on your public profile</p></div><label class="s-switch"><input type="checkbox" checked><span class="s-slider"></span></label></div>
+              <div class="s-toggle-row"><div><h4>Show Achievements</h4><p>Display earned badges on your profile</p></div><label class="s-switch"><input type="checkbox" checked><span class="s-slider"></span></label></div>
+            </div>
+
+            <div class="s-group">
+              <h3 class="s-group-title"><i class="fa-solid fa-database"></i> Data Management</h3>
+              <div class="s-action-row">
+                <div><h4>Export Your Data</h4><p>Download all your learning data as a JSON file</p></div>
+                <button class="btn btn-ghost btn-sm" id="exportDataBtn"><i class="fa-solid fa-download"></i> Export</button>
+              </div>
+              <div class="s-action-row danger">
+                <div><h4>Delete Account</h4><p>Permanently delete your account and all associated data</p></div>
+                <button class="btn btn-sm s-danger-btn" id="deleteAccountBtn"><i class="fa-solid fa-trash"></i> Delete</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== AI PREFERENCES SECTION ===== -->
+          <div class="settings-section" id="settings-ai">
+            <h2 class="settings-section-title">AI Preferences</h2>
+
+            <div class="s-group">
+              <h3 class="s-group-title"><i class="fa-solid fa-brain"></i> AI Mentor Behavior</h3>
+              <div class="s-field">
+                <label>Response Style</label>
+                <select id="aiStyleSelect">
+                  <option value="concise">Concise — Short & direct answers</option>
+                  <option value="detailed" selected>Detailed — Thorough explanations</option>
+                  <option value="socratic">Socratic — Guides you with questions</option>
+                </select>
+              </div>
+              <div class="s-field">
+                <label>Difficulty Level</label>
+                <select id="aiDifficultySelect">
+                  <option value="beginner">Beginner — Explain like I'm 5</option>
+                  <option value="intermediate" selected>Intermediate — Some background assumed</option>
+                  <option value="advanced">Advanced — Expert-level depth</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="s-group">
+              <h3 class="s-group-title"><i class="fa-solid fa-wand-magic-sparkles"></i> Smart Features</h3>
+              <div class="s-toggle-row"><div><h4>Auto-Suggest Next Topic</h4><p>AI recommends what to learn next based on your progress</p></div><label class="s-switch"><input type="checkbox" checked><span class="s-slider"></span></label></div>
+              <div class="s-toggle-row"><div><h4>Code Review Assistance</h4><p>AI provides feedback on your code submissions</p></div><label class="s-switch"><input type="checkbox" checked><span class="s-slider"></span></label></div>
+              <div class="s-toggle-row"><div><h4>Learning Path Optimization</h4><p>AI adjusts your roadmap based on performance</p></div><label class="s-switch"><input type="checkbox" checked><span class="s-slider"></span></label></div>
+              <div class="s-toggle-row"><div><h4>Study Session Insights</h4><p>Post-session analysis of productivity and focus</p></div><label class="s-switch"><input type="checkbox"><span class="s-slider"></span></label></div>
+            </div>
+
+            <div class="s-group">
+              <h3 class="s-group-title"><i class="fa-solid fa-clock-rotate-left"></i> AI Memory</h3>
+              <div class="s-toggle-row"><div><h4>Remember Conversation Context</h4><p>AI retains context from previous mentoring sessions</p></div><label class="s-switch"><input type="checkbox" checked><span class="s-slider"></span></label></div>
+              <div class="s-action-row">
+                <div><h4>Clear AI Memory</h4><p>Reset all saved conversation context and preferences</p></div>
+                <button class="btn btn-ghost btn-sm" id="clearAiMemoryBtn"><i class="fa-solid fa-eraser"></i> Clear</button>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
   </div><!-- end page-wrapper -->
