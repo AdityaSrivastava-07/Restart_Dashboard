@@ -386,7 +386,13 @@
             <div class="card-header">
               <h3><i class="fa-solid fa-circle-half-stroke"></i> Focus Score</h3>
             </div>
-            <canvas id="focusChart"></canvas>
+            <div style="position: relative; display: flex; justify-content: center; align-items: center; flex: 1; max-height: 180px;">
+              <canvas id="focusChart"></canvas>
+              <div style="position: absolute; display: flex; flex-direction: column; align-items: center; pointer-events: none;">
+                <span style="font-size: 1.8rem; font-weight: 800; font-family: var(--font-heading); color: var(--text-primary);">85%</span>
+                <span style="font-size: 0.75rem; color: var(--text-muted); margin-top: -2px;">Deep Work</span>
+              </div>
+            </div>
           </div>
           <div class="glass-card chart-card">
             <div class="card-header">

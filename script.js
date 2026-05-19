@@ -55,6 +55,80 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const currentTheme = loadAppearanceSettings();
 
+  // --- XP System ---
+  const BASE_XP = 12400;
+  const getXP = () => parseInt(localStorage.getItem('ristart-xp') || '0');
+  const addXP = (amount) => {
+    const current = getXP();
+    const newXP = current + amount;
+    localStorage.setItem('ristart-xp', newXP);
+    updateXPDisplays(newXP);
+    showXPGain(amount);
+    return newXP;
+  };
+
+  const updateXPDisplays = (earnedXP) => {
+    const totalXP = BASE_XP + earnedXP;
+    // Update navbar momentum
+    const navMomentum = document.getElementById('navMomentum');
+    if (navMomentum) {
+      const newMomentum = 847 + Math.floor(earnedXP / 10);
+      navMomentum.innerText = newMomentum;
+    }
+    // Update dashboard KPI and radial XP values if they exist
+    document.querySelectorAll('[data-target="12400"]').forEach(el => {
+      el.setAttribute('data-target', totalXP);
+      el.innerText = totalXP.toLocaleString();
+    });
+  };
+
+  const showXPGain = (amount) => {
+    const navMomentum = document.getElementById('navMomentum');
+    if (!navMomentum) return;
+    const badge = navMomentum.closest('.momentum-badge');
+    if (!badge) return;
+
+    // Pulse animation on badge
+    badge.style.transform = 'scale(1.15)';
+    badge.style.boxShadow = '0 0 20px rgba(249, 115, 22, 0.6)';
+    setTimeout(() => {
+      badge.style.transform = 'scale(1)';
+      badge.style.boxShadow = '';
+    }, 500);
+
+    // Floating +XP indicator
+    const floater = document.createElement('div');
+    floater.innerText = `+${amount} XP`;
+    floater.style.cssText = `
+      position: absolute; top: -8px; right: -10px; 
+      background: linear-gradient(135deg, #f97316, #eab308); 
+      color: white; font-size: 0.7rem; font-weight: 700; 
+      padding: 2px 8px; border-radius: 20px; 
+      pointer-events: none; z-index: 100;
+      animation: xpFloat 1.5s ease-out forwards;
+      font-family: var(--font-heading);
+    `;
+    badge.style.position = 'relative';
+    badge.appendChild(floater);
+    setTimeout(() => floater.remove(), 1500);
+  };
+
+  // Inject XP float animation if not present
+  if (!document.getElementById('xp-float-style')) {
+    const style = document.createElement('style');
+    style.id = 'xp-float-style';
+    style.textContent = `
+      @keyframes xpFloat {
+        0% { opacity: 1; transform: translateY(0); }
+        100% { opacity: 0; transform: translateY(-30px); }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // Load saved XP on page load
+  updateXPDisplays(getXP());
+
   // --- 1. Loader & Initialization ---
   const loader = document.getElementById('loader');
   setTimeout(() => {
@@ -1314,7 +1388,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const parentLabel = selected.closest('.quiz-label');
       if (selected.value === 'correct') {
         parentLabel.style.borderColor = 'var(--accent-green)';
-        showToast('Correct! Great job.', 'success');
+        // Check if this question was already answered correctly
+        if (!activeQ.dataset.answeredCorrectly) {
+          activeQ.dataset.answeredCorrectly = 'true';
+          addXP(50);
+          showToast('Correct! +50 XP 🎉', 'success');
+        } else {
+          showToast('Correct! (Already earned XP for this one)', 'success');
+        }
       } else {
         parentLabel.style.borderColor = 'var(--accent-orange)';
         showToast('Incorrect. Review the lesson material and try again.', 'info');
@@ -1428,7 +1509,20 @@ document.addEventListener('DOMContentLoaded', () => {
           
           matchScores[currentMatchQ]++;
           if (matchScoreEl) matchScoreEl.innerText = `${matchScores[currentMatchQ]}/3`;
-          showToast('Perfect match!', 'success');
+          
+          // Award XP per correct pair
+          addXP(30);
+          
+          // Bonus XP for completing a full set (3/3)
+          if (matchScores[currentMatchQ] === 3) {
+            setTimeout(() => {
+              addXP(100);
+              showToast('🏆 Full match set completed! +100 Bonus XP!', 'success');
+            }, 600);
+            showToast('Perfect match! +30 XP', 'success');
+          } else {
+            showToast('Perfect match! +30 XP', 'success');
+          }
           
           selectedMatchHook = null;
         } else {
